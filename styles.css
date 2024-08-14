@@ -1,0 +1,213 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-image: url('path/to/your/image.jpg');
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 10px;
+  box-sizing: border-box;
+  flex-direction: column; /* Mengatur konten agar fleksibel */
+  min-height: 100vh;
+  height: 100%; /* Pastikan html dan body mengisi seluruh tinggi viewport */
+  margin: 0; /* Hapus margin default *
+}
+
+tes {
+}
+
+h1 {
+  text-align: center;
+  color: #4a90e2;
+  margin: 0;
+  margin-bottom: 80px; /* Hapus margin default untuk konsistensi */
+}
+
+
+h1 {
+  text-align: center;
+  color: #4a90e2;
+  margin: 0;
+  margin-bottom: 30px; /* Hapus margin default untuk konsistensi */
+}
+
+h2 {
+  margin-top: 100px;
+  text-align: center; /* Centang text jika diperlukan */
+}
+
+.container {
+  display: flex;
+  background: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+}
+
+.column {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  flex: 1; /* Membuat konten utama mengisi ruang yang tersisa */
+  padding: 20px; /* Tambahkan padding sesuai kebutuhan */
+  box-sizing: border-box; /* Pastikan padding tidak mempengaruhi lebar total */
+}
+
+form {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #4a90e2;
+}
+
+input[type="text"] {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #357ab8;
+}
+
+.result {
+  margin-top: 20px;
+  padding: 20px;
+  border: 2px solid #4a90e2;
+  border-radius: 10px;
+  background-color: #e6f2ff;
+  font-size: 1.5em;
+  color: #4a90e2;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s ease;
+}
+
+.result img {
+  width: 50px;
+  height: 50px;
+  margin-right: 20px;
+}
+
+.result.show {
+  transform: scale(1.05);
+}
+
+.audio-controls {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.audio-controls button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  margin: 0 5px; /* Jarak antar tombol */
+}
+
+.audio-controls button:hover {
+  background-color: #357ab8;
+}
+
+.audio-controls button:active {
+  transform: scale(0.98);
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9em;
+  position: relative; /* Mengatur posisi relatif footer */
+  width: 90%;
+  box-sizing: border-box; /* Memastikan padding tidak mempengaruhi lebar */
+  z-index: 1; /* Pastikan footer di atas konten jika diperlukan */
+}
+
+/* Styling untuk tampilan responsif di PC */
+@media (min-width: 1024px) {
+  footer {
+      font-size: 1em; /* Ukuran font footer yang lebih besar untuk layar besar */
+      display: block;
+      vertical-align: bottom;
+      margin-top: 100px;
+  }
+}
+
+@media (min-width: 600px) {
+  .audio-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px; /* Jarak antar tombol */
+  }
+}
+
+/* Media query untuk layar lebar */
+@media (min-width: 600px) {
+  .container {
+    flex-direction: row;
+  }
+
+  h2 {
+    display: none; /* Menyembunyikan h2 pada layar lebar */
+  }
+}
+
+@media (max-width: 599px) {
+  body {
+    flex-direction: column;
+  }
+  
+  .container {
+    width: calc(100% - 20px); /* Menghindari padding yang berlebihan */
+    margin: 0 auto; /* Center the container */
+  }
+  
+  .column {
+    padding: 10px;
+  }
+  
+  form {
+    width: 100%;
+  }
+  
+  .result {
+    font-size: 1.2em;
+  }
+}

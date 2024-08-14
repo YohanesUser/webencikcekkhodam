@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Khodam</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* CSS tambahan untuk tampilan loading */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Pastikan loading berada di atas konten */
+        }
+
+        .loading .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #4a90e2;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading .message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center; /* Memastikan teks pusat */
+        }
+
+        .loading .info {
+            margin-top: 10px;
+            font-size: 0.99em;
+            color: #141414;
+        }
+
+        .loading .creator {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin: 20px auto;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Styling untuk tampilan responsif */
+        @media (min-width: 768px) {
+            .video-container {
+                display: none; /* Sembunyikan video di mode PC */
+            }
+
+            .video-controls {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+
+            .video-controls button {
+                margin: 0 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .video-container {
+                display: block; /* Tampilkan video di mode ponsel */
+            }
+
+            .video-controls {
+                display: block;
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .video-controls button {
+                margin: 10px;
+            }
+        }
+
+        .result-loading {
+            display: none;
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+                /* CSS untuk background slideshow */
+                .slideshow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Pastikan slideshow berada di belakang konten */
+            overflow: hidden;
+        }
+
+        .slideshow-container img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .slideshow-container img.active {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <div class="spinner"></div>
+        <div class="message">Selamat datang! Mohon tunggu sebentar...</div>
+        <div class="info">Web Ini Hanya permainan, jangan dipercaya</div>
+        <div class="creator">Website oleh Yhns and chat gpt</div>
+    </div>
+
+    <div class="slideshow-container">
+        <img src="awang.jpg" class="active">
+        <img src="bagus.jpg">
+        <img src="farell.jpg">
+        <img src="tunggul.jpg">
+        <img src="jopinn.jpg">
+        <img src="bondann.jpg">
+        <img src="tara.jpg">
+        <img src="bagus2.jpg">
+        <!-- Tambahkan lebih banyak gambar sesuai kebutuhan -->
+    </div>
+
+    <h1>Masukkan Namamu Untuk Cek Khodam</h1>
+    <div class="container">
+        <div class="column">
+            <form id="nameForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <br><br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        <div class="column">
+            <div id="result" class="result"></div>
+            <div class="result-loading" id="resultLoading">Mengecek khodam...</div>
+        </div>
+    </div>
+
+    <h2>Video Controls</h2>
+
+    <div class="video-selection">
+        <label for="videoSelect">Pilih Video:</label>
+        <select id="videoSelect">
+            <option value="4Ktksh_1W5Y">Video 1</option>
+            <option value="gmVNgy1Vfbg">Video 2</option>
+            <option value="eL_GpALFrlU">Video 3</option>
+            <option value="AKm0GhHkhR4">Video 4</option>
+            <!-- Tambahkan lebih banyak video sesuai kebutuhan -->
+        </select>
+    </div>
+
+    <div class="video-container">
+        <div id="youtubePlayer"></div>
+    </div>
+
+    <div class="video-controls">
+        <button onclick="playVideo()">Play</button>
+        <button onclick="pauseVideo()">Pause</button>
+        <button onclick="stopVideo()">Stop</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2024 Cek Khodam Yhns. Semua hak cipta dilindungi.</p>
+    </footer>
+
+    <script>
+        var nameToMessageMap = {};
+
+        document.getElementById('nameForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting
+
+            var name = document.getElementById('name').value;
+            var resultElement = document.getElementById('result');
+            var resultLoadingElement = document.getElementById('resultLoading');
+
+            // Show loading message
+            resultLoadingElement.style.display = 'block';
+            resultElement.textContent = '';
+
+            // Check if the name has already been submitted
+            if (nameToMessageMap[name]) {
+                setTimeout(function() {
+                    var message = 'Aduhh, ' + name + ', kamu sudah pernah cek khodam sebelumnya. Khodammu tadi adalah: ' + nameToMessageMap[name];
+                    resultElement.textContent = message;
+                    resultLoadingElement.style.display = 'none';
+                    speakIndonesian(message);
+                }, 2000); // Simulate loading delay
+                return;
+            }
+
+            var messages = [
+                'kamu punya khodam yang berwujud Kunti Bogel. Hati-hati, jangan dipanggil malam-malam!',
+                'wah, khodammu adalah Anak Tuyul! Pastikan dompetmu aman!',
+                'ternyata, khodammu adalah Tuyul. Semoga tidak mengambil uang receh!',
+                'khodammu berwujud Gendruwo. Sosok besar dan menakutkan!',
+                'POCONG adalah khodammu. Jangan lupa mengikat tali pocongnya!',
+                'BANASPATI, si api misterius, adalah khodammu. Berhati-hatilah dengan api!',
+                'khodammu adalah BANGKAI TIKUS. Hmmm, aromanya?',
+                'BANGKAI ULAR adalah khodammu. Semoga tidak melilit!',
+                'MALAIKAT PENCABUT NYAWA sebagai khodammu. Serem ya!',
+                'kamu memiliki khodam SUSTER NGESOT. Siap berlari cepat?',
+                'HARIMAU PUTIH sebagai khodammu. Gagah dan berani!',
+                'khodammu adalah NAGA MERAH. Kekuatan naga ada padamu!',
+                'kamu memiliki KAKEK SAKTI sebagai khodam. Pasti banyak ilmu!',
+                'MAK LAMPIR adalah khodammu. Waspadalah dengan sihirnya!',
+                'kamu punya khodam ANAK NEEKO. Lucu dan manis!',
+                'SINGA MUSAFIR sebagai khodammu. Kekuatan singa dalam perjalanan!',
+                'KENTANG GORENG adalah khodammu. Gurih dan renyah!',
+                'kamu memiliki DORAEMON MALAS sebagai khodam. Banyak alat canggih!',
+                'kucing kesayanganmu, KUCING OYEN, adalah khodammu. Menggemaskan!',
+                'NASI PADANG adalah khodammu. Lezat dan mengenyangkan!',
+                'POCONG BERMATA SATU adalah khodammu. Mata tajamnya mengintai!',
+                'khodammu adalah MAYAT GENTAYANGAN. Waspada di malam hari!',
+                'KUNTILANAK PENGHISAP DARAH sebagai khodammu. Seram sekali!',
+                'kamu memiliki KUNTILANAK JOMBLO sebagai khodam. Cari jodoh buat dia!',
+                'POCONG GAMERS adalah khodammu. Pasti jago main game!',
+                'kamu punya khodam JIN LAMPU TUKANG RUSUH. Banyak permintaan yang aneh!',
+                'WEWE GOMBEL BUNTUNG adalah khodammu. Hati-hati, jangan sampai diganggu!',
+                'NYI RORO KIDUL TUKANG BATAGOR sebagai khodammu. Lezat dan mistis!',
+                'HANTU LAUT adalah khodammu. Seram di kedalaman laut!',
+                'ULAR PITON adalah khodammu. Kuat dan melilit!',
+                'kamu punya khodam SILUMAN HARIMAU. Kekuatan dan keberanian!',
+                'kamu memiliki khodam DORO KASORO. Waspada dengan sihirnya!',
+                'POCONG TERBANG adalah khodammu. Berhati-hati di malam hari!',
+                'LEAK adalah khodammu. Seram dan mistis!',
+                'kamu punya khodam ONDEL-ONDEL. Tradisional dan mistis!',
+                'BANGKAI ANJING sebagai khodammu. Hati-hati dengan bau busuk!',
+                'kamu memiliki khodam SUSTER PATAH HATI. Jangan bikin dia sedih!',
+                'UNDUL sebagai khodammu. Seram dan tanpa rambut!',
+                'LEAK LAPAR adalah khodammu. Hati-hati dengan lapar!',
+                'kamu memiliki khodam SILUMAN ULAR PUTIH. Kekuatan ular!',
+                'PENUNGGU KRATON sebagai khodammu. Penjaga kerajaan kuno!',
+                'NYI BLORONG adalah khodammu. Legenda ular cantik!',
+                'PRAJURIT MAJAPAHIT sebagai khodammu. Kuat dan pemberani!',
+                'kamu punya khodam TUYUL ONTEL. Jangan sampai menghilang!',
+                'JENGLOT GUNUNG KAWI sebagai khodammu. Misterius dan mistis!',
+                'kamu memiliki khodam TUYUL SAHAM. Pasti kaya raya!',
+                'WEWE GOMBRL TUA adalah khodammu. Hati-hati dengan gombalan tua!',
+                'BAJAK LAUT sebagai khodammu. Petualangan di laut lepas!',
+                'kamu punya khodam KELELAWAR GUA. Terbang di malam hari!',
+                'PENUNGGU KUBURAN CHINA adalah khodammu. Jaga baik-baik makam!',
+                'SUDEL BOLONG sebagai khodammu. Seram dengan lubang di punggung!',
+                'SANDAL BOLONG adalah khodammu. Jangan sampai hilang!',
+                'JENGLOT KOLEKTOR BARANG ANTIK sebagai khodammu. Banyak koleksi aneh!',
+                'BADUT LAWANG SEWU adalah khodammu. Seram dan misterius!',
+                'BANDIT TERSESAT sebagai khodammu. Jangan sampai tertangkap!',
+                'kamu punya khodam JERITAN DARAH. Waspada dengan teriakan seram!',
+                'BONEKA ANABEL sebagai khodammu. Boneka yang hidup!',
+                'kamu memiliki khodam BONEKA ARWAH. Seram dan misterius!',
+                'DONAT BASI adalah khodammu. Jangan dimakan!',
+                'TIDAK PUNYA KHODAM. Coba lagi!',
+                'MAAF ERROR. Silakan coba lagi!',
+                'MAYAT TERBANG adalah khodammu. Terbang di malam hari!',
+                'HANTU LAUT sebagai khodammu. Seram di kedalaman laut!',
+                'ULAR PITON adalah khodammu. Kuat dan melilit!',
+                'TARZAN KUNO sebagai khodammu. Petualangan di hutan!',
+                'MBAH DUKUN adalah khodammu. Banyak ilmu gaib!',
+                'KAKEK ZEUS sebagai khodammu. Kekuatan petir!',
+                'kamu memiliki khodam PEMAIN SLOT. Jago dalam perjudian!',
+                'PEMAIN JUDI sebagai khodammu. Berhati-hati!',
+                'PASAR MALAM BERHANTU adalah khodammu. Banyak hantu di malam!',
+                'kamu punya khodam THE NURULS SEBLAK. Pedas dan lezat!',
+                'SCOPPY DOO sebagai khodammu. Anjing detektif!',
+                'TV TABUNG adalah khodammu. Nostalgia masa lalu!',
+                'ARWAH TERBANG sebagai khodammu. Menyusuri angkasa!',
+                'PESAWAT TERBANG ANGKER adalah khodammu. Seram di udara!',
+                'MAAF COBA LAGI. Khodam tidak ditemukan!',
+                'WATERPARK TERBENGKALAI sebagai khodammu. Banyak cerita seram!',
+                'HANTU PASAR MALAM adalah khodammu. Petualangan di malam!',
+                'TAMAT. Terima kasih telah bermain!',
+                'TERIMAKASIH. Sampai jumpa lagi!',
+                'kamu punya khodam GENDERUWO NYASAR. Jangan sampai tersesat!',
+                'LELEMBUT GUNUNG adalah khodammu. Gunung-gunung adalah wilayahnya!',
+                'kamu memiliki khodam GUNDI NASI KUNING. Hati-hati jangan sampai lapar!',
+                'ROKET JIN adalah khodammu. Berhati-hatilah dengan ledakan!',
+                'kamu punya khodam CINTA KUYUK. Selalu setia menemani!',
+                'PERI MALAM adalah khodammu. Keindahan malam selalu bersamamu!',
+                'kamu memiliki khodam SI MANIS JEMBATAN ANCOL. Hati-hati saat melintas jembatan!',
+                'GADIS NYESOT adalah khodammu. Siap berlari cepat!',
+                'kamu punya khodam TUNGGANGAN JIN. Bersiaplah untuk terbang tinggi!',
+                'WANITA API adalah khodammu. Jangan sampai terbakar!'
+            ];
+
+            // Simulate a delay before displaying the result
+            setTimeout(function() {
+                var randomIndex = Math.floor(Math.random() * messages.length);
+                var randomMessage = messages[randomIndex];
+
+                // Save the message for the name
+                nameToMessageMap[name] = randomMessage;
+
+                var message = 'Halo, ' + name + ', ' + randomMessage;
+                resultElement.textContent = message;
+                resultLoadingElement.style.display = 'none';
+
+                // Speak the message
+                speakIndonesian(message);
+            }, 2000); // Simulate loading delay
+        });
+
+        function speakIndonesian(text) {
+            if ('speechSynthesis' in window) {
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'id-ID';
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.error('Speech Synthesis not supported in this browser.');
+            }
+        }
+
+          // Slideshow JavaScript
+          var slideIndex = 0;
+        var slides = document.querySelectorAll('.slideshow-container img');
+        var totalSlides = slides.length;
+
+        function showSlides() {
+            for (var i = 0; i < totalSlides; i++) {
+                slides[i].classList.remove('active');
+            }
+            slideIndex++;
+            if (slideIndex > totalSlides) {
+                slideIndex = 1;
+            }
+            slides[slideIndex - 1].classList.add('active');
+            setTimeout(showSlides, 10000); // Change image every 5 seconds
+        }
+
+        showSlides();
+
+        // Fungsi untuk menginisialisasi YouTube player
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtubePlayer', {
+                height: '390',
+                width: '640',
+                videoId: '4Ktksh_1W5Y',
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function playVideo() {
+            player.playVideo();
+        }
+
+        function pauseVideo() {
+            player.pauseVideo();
+        }
+
+        function stopVideo() {
+            player.stopVideo();
+        }
+
+        function onPlayerReady(event) {
+            // Event handler ketika video siap diputar
+        }
+
+        function onPlayerStateChange(event) {
+            // Event handler ketika status video berubah
+        }
+
+        // Load IFrame Player API code asynchronously
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // Mengubah video saat pengguna memilih video baru dari dropdown
+        document.getElementById('videoSelect').addEventListener('change', function() {
+            var selectedVideoId = this.value;
+            player.loadVideoById(selectedVideoId);
+        });
+
+        // Simulasi loading sebelum halaman ditampilkan
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.querySelector('.loading').style.display = 'none';
+            }, 3000); // Simulasi loading selama 3 detik
+        });
+    </script>
+</body>
+</html>
