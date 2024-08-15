@@ -1,0 +1,162 @@
+/* calendar.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+    padding-top: 80px;
+    background-image: url(https://images.unsplash.com/photo-1637217997829-122a531fda3c?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D); /* To prevent content from being hidden behind the fixed header */
+}
+
+/* CSS untuk background slideshow */
+.slideshow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Pastikan slideshow berada di belakang konten */
+    overflow: hidden;
+}
+
+.slideshow-container img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.slideshow-container img.active {
+    opacity: 1;
+}
+
+
+header {
+    width: 100%;
+    background: #333;
+    color: white;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    padding-left: 20px;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+nav ul li {
+    margin: 0 10px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.calendar-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 100px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.year-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.year-navigation button {
+    padding: 10px 20px;
+    font-size: 1em;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+#current-year {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+.month {
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #f2f2f2;
+}
+
+.month h3 {
+    text-align: center;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+}
+
+.day {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.day.weekend {
+    background-color: #e6e6e6;
+}
+
+.footer {
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    background: #333;
+    color: white;
+    bottom: 0;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    #calendar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    #calendar {
+        grid-template-columns: 1fr;
+    }
+}

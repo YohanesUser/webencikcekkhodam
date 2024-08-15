@@ -71,6 +71,22 @@
             height: 100%;
         }
 
+        .button-link {
+    display: inline-block;
+    border: none;
+    background-color: black;
+    padding: 0;
+    margin: 10px; /* Menambahkan jarak antar tombol */
+}
+
+.button-link img {
+    display: block;
+    width: 200px; /* Sesuaikan ukuran gambar */
+    height: auto;
+    cursor: pointer;
+}
+
+
         /* Styling untuk tampilan responsif */
         @media (min-width: 768px) {
             .video-container {
@@ -153,6 +169,7 @@
         <img src="bondann.jpg">
         <img src="tara.jpg">
         <img src="bagus2.jpg">
+        <img src="IMG20240716114803.jpg">
         <!-- Tambahkan lebih banyak gambar sesuai kebutuhan -->
     </div>
 
@@ -195,6 +212,18 @@
         <button onclick="stopVideo()">Stop</button>
     </div>
 
+    <button class="button-link" onclick="window.location.href='jam.html'">
+        <img src="jam-icon.png" alt="Jam Digital">
+    </button>
+
+    <button class="button-link" onclick="window.location.href='kalender.html'">
+        <img src="jam-icon.png" alt="Kalender">
+    </button>
+
+    <button class="button-link" onclick="window.location.href='wa.html'">
+        <img src="jam-icon.png" alt="kontak (WA)">
+    </button>
+    
     <!-- Footer -->
     <footer class="footer">
         <p>© 2024 Cek Khodam Yhns. Semua hak cipta dilindungi.</p>
@@ -409,12 +438,27 @@
             player.loadVideoById(selectedVideoId);
         });
 
-        // Simulasi loading sebelum halaman ditampilkan
         window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.querySelector('.loading').style.display = 'none';
-            }, 3000); // Simulasi loading selama 3 detik
-        });
+    // Cek apakah loading sudah pernah ditampilkan sebelumnya
+    var loadingDisplayed = localStorage.getItem('loadingDisplayed');
+    
+    // Jika status loading tidak ada di localStorage atau sudah kadaluarsa
+    if (!loadingDisplayed || Date.now() - parseInt(loadingDisplayed) > 86400000) { // 86400000 ms = 24 jam
+        // Tampilkan loading screen
+        document.querySelector('.loading').style.display = 'flex';
+        
+        // Sembunyikan loading screen setelah 3 detik dan simpan status ke localStorage
+        setTimeout(function() {
+            document.querySelector('.loading').style.display = 'none';
+            localStorage.setItem('loadingDisplayed', Date.now().toString());
+        }, 3000); // Simulasi loading selama 3 detik
+    } else {
+        // Jika loading sudah pernah ditampilkan, langsung sembunyikan loading screen
+        document.querySelector('.loading').style.display = 'none';
+    }
+});
+
+
     </script>
 </body>
 </html>
